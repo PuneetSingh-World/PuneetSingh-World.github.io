@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Puneet Singh — Portfolio</title>
+  <title>Your Name — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -104,13 +104,17 @@
     }
     .avatar-frame {
       width: 340px; height: 400px;
-      background: var(--accent-light);
       border-radius: 60% 40% 55% 45% / 50% 45% 55% 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Playfair Display', serif;
-      font-size: 7rem; color: var(--accent);
       position: relative;
       animation: float 6s ease-in-out infinite;
+      overflow: hidden;
+      border: 4px solid var(--accent-light);
+      box-shadow: 0 0 0 8px rgba(196,80,42,0.1);
+    }
+    .avatar-frame img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
     }
     @keyframes float {
       0%, 100% { transform: translateY(0); }
@@ -253,7 +257,7 @@
 
   <!-- NAV -->
   <nav>
-    <a href="#" class="nav-logo">PS.</a>
+    <a href="#" class="nav-logo">YN.</a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#projects">Projects</a></li>
@@ -396,28 +400,28 @@
           <div class="contact-icon">📧</div>
           <div>
             <div class="contact-item-label">Email</div>
-            <div class="contact-item-value">puneet.myworld@gmail.com</div>
+            <div class="contact-item-value">your.email@example.com</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon">🔗</div>
           <div>
             <div class="contact-item-label">GitHub</div>
-            <div class="contact-item-value">github.com/PuneetSingh-World</div>
+            <div class="contact-item-value">github.com/yourusername</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon">💼</div>
           <div>
             <div class="contact-item-label">LinkedIn</div>
-            <div class="contact-item-value">linkedin.com/in/puneet-singh-2b702b124/</div>
+            <div class="contact-item-value">linkedin.com/in/yourname</div>
           </div>
         </div>
         <div class="contact-item">
           <div class="contact-icon">📍</div>
           <div>
             <div class="contact-item-label">Location</div>
-            <div class="contact-item-value">Sydney, Australia</div>
+            <div class="contact-item-value">Your City, Country</div>
           </div>
         </div>
       </div>
