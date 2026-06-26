@@ -3,211 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puneet's Dynamic 3D Launchpad</title>
+  <title>Puneet's Animated Command Center</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    body {
-      background: radial-gradient(circle at center, #1e1b4b 0%, #090514 100%);
-      overflow-x: hidden;
-    }
-    /* Smooth glassmorphism style */
-    .glass-panel {
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    /* Hide scrollbars but keep functionality */
-    ::-webkit-scrollbar {
-      display: none;
-    }
-    canvas {
-      pointer-events: none; /* Allows clicks to pass through to links */
-    }
+    body { background: radial-gradient(circle at center, #0c0a20 0%, #03010a 100%); overflow-x: hidden; }
+    .glass-card { background: rgba(13, 11, 34, 0.35); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    canvas { pointer-events: none; }
+    ::-webkit-scrollbar { display: none; }
   </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col items-center justify-start p-4 md:p-8 font-sans relative select-none">
+<body class="min-h-screen text-slate-100 flex flex-col items-center p-4 md:p-8 font-sans relative select-none">
 
-  <canvas id="webgl-backend" class="fixed top-0 left-0 w-full h-full z-0"></canvas>
+  <canvas id="3d-viewport" class="fixed top-0 left-0 w-full h-full z-0"></canvas>
 
-  <div class="relative z-10 w-full max-w-4xl flex flex-col items-center">
-    
-    <header class="text-center my-8 max-w-xl w-full glass-panel p-6 rounded-2xl shadow-2xl border border-indigo-500/20">
-      <div class="w-20 h-20 bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-600 rounded-full mx-auto mb-4 shadow-[0_0_30px_rgba(99,102,241,0.4)] flex items-center justify-center text-2xl font-black tracking-wider border border-white/20">
-        PS
-      </div>
-      <h1 class="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
-        Puneet's Command Center
-      </h1>
-      <p class="text-cyan-400 text-xs font-bold tracking-[0.2em] mt-2 uppercase">Real-Time Animated Asset Terminal</p>
+  <div class="relative z-10 w-full max-w-5xl flex flex-col items-center">
+    <header class="text-center my-6 max-w-xl w-full glass-card p-6 rounded-2xl border border-indigo-500/20">
+      <div class="w-16 h-16 bg-gradient-to-tr from-cyan-400 via-purple-500 to-emerald-400 rounded-full mx-auto mb-3 shadow-[0_0_40px_rgba(168,85,247,0.4)] flex items-center justify-center text-xl font-black border border-white/20">PS</div>
+      <h1 class="text-3xl font-black bg-gradient-to-r from-white to-indigo-300 bg-clip-text text-transparent">Puneet's Launchpad</h1>
+      <p class="text-purple-400 text-[10px] font-bold tracking-[0.3em] mt-1.5 uppercase">3D Matrix Link Hub</p>
     </header>
 
-    <main id="launchpad-grid" class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 px-2">
-      </main>
+    <main id="matrix-grid" class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 px-2"></main>
 
-    <footer class="my-12 text-center text-[10px] tracking-widest text-slate-500 uppercase">
-      &copy; 2026 PuneetSingh-World &bull; Engine Status: <span class="text-emerald-400 font-bold animate-pulse">Active</span>
+    <footer class="my-10 text-[9px] tracking-widest text-slate-600 uppercase">
+      System Framework Node v1.0.2 &bull; Status: <span class="text-emerald-400 font-bold animate-pulse">Online</span>
     </footer>
   </div>
 
   <script>
-    /* ==========================================
-       1. DATA STORAGE: Manage your links here
-       ========================================== */
-    const dataset = [
-      {
-        category: "🤖 Development & Bots",
-        links: [
-          { name: "GitHub Repository", url: "https://github.com/PuneetSingh-World/PuneetSingh-World.github.io", desc: "Source terminal for this architecture", color: "hover:border-cyan-500/50" },
-          { name: "Vercel Ecosystem", url: "https://vercel.com", desc: "Serverless server control hub", color: "hover:border-purple-500/50" },
-          { name: "OAuth Developer Console", url: "https://github.com/settings/developers", desc: "Token authentication access points", color: "hover:border-indigo-500/50" }
-        ]
-      },
-      {
-        category: "💼 Professional Assets",
-        links: [
-          { name: "LinkedIn Network", url: "https://www.linkedin.com/in/puneet-singh-2b702b124/", desc: "Verified corporate identity file", color: "hover:border-emerald-500/50" },
-          { name: "System Engineering Sandbox", url: "#", desc: "Protected test bed environments", color: "hover:border-amber-500/50" }
-        ]
-      }
-    ];
+    // CORE SYNC ENGINE: Reads directly from the local db.json file in your repo
+    async function loadDataPipeline() {
+      try {
+        const response = await fetch('./db.json');
+        const finalData = await response.json();
 
-    /* ==========================================
-       2. UI DOM ENGINE: Renders the elements
-       ========================================== */
-    function buildInterface() {
-      const grid = document.getElementById('launchpad-grid');
-      grid.innerHTML = dataset.map(categoryBlock => `
-        <div class="col-span-1 md:col-span-2">
-          <h2 class="text-xs font-extrabold tracking-[0.15em] text-cyan-400/80 uppercase mb-3 ml-2">${categoryBlock.category}</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            ${categoryBlock.links.map(item => `
-              <a href="${item.url}" target="_blank" rel="noopener noreferrer" 
-                 class="group glass-panel p-5 rounded-xl block transition-all duration-300 hover:-translate-y-1 ${item.color} hover:shadow-[0_0_25px_rgba(6,182,212,0.15)]">
-                <div class="flex justify-between items-start">
-                  <div>
-                    <h3 class="font-bold text-slate-100 group-hover:text-cyan-300 transition-colors duration-200">${item.name}</h3>
-                    <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${item.desc}</p>
+        const grid = document.getElementById('matrix-grid');
+        grid.innerHTML = finalData.map(box => `
+          <div class="glass-card p-6 rounded-2xl border border-white/5">
+            <h2 class="text-xs font-black tracking-widest text-indigo-400 uppercase mb-4">${box.category}</h2>
+            <div class="space-y-3">
+              ${box.links.map(link => `
+                <a href="${link.url}" target="_blank" rel="noopener noreferrer" 
+                   class="group block p-4 bg-slate-950/40 border border-slate-900 rounded-xl transition-all duration-300 hover:-translate-y-0.5 ${link.color}">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <h3 class="font-bold text-slate-200 group-hover:text-white">${link.name}</h3>
+                      <p class="text-[11px] text-slate-400 mt-0.5 line-clamp-1">${link.desc}</p>
+                    </div>
+                    <span class="text-slate-700 group-hover:text-purple-400 text-sm">&rarr;</span>
                   </div>
-                  <span class="text-slate-600 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200 text-lg">&nearr;</span>
-                </div>
-              </a>
-            `).join('')}
+                </a>
+              `).join('')}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `).join('');
+      } catch (err) {
+        console.error("Database connection configuration failed:", err);
+      }
     }
-    document.addEventListener('DOMContentLoaded', buildInterface);
+    document.addEventListener('DOMContentLoaded', loadDataPipeline);
 
-    /* ==========================================
-       3. THREE.JS ENGINE: Interactive 3D Background
-       ========================================== */
-    const canvas = document.getElementById('webgl-backend');
+    // THREE.JS VIEWPORT ENGINE
+    const canvas = document.getElementById('3d-viewport');
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-    
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-    scene.add(ambientLight);
+    const cursorLight = new THREE.PointLight(0xa855f7, 3, 25); scene.add(cursorLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15); scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0x06b6d4, 1.5); directionalLight.position.set(1, 4, 5); scene.add(directionalLight);
 
-    const pointLight = new THREE.PointLight(0x6366f1, 2, 50);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
-
-    const cyanLight = new THREE.PointLight(0x06b6d4, 1.5, 30);
-    cyanLight.position.set(-5, -5, 2);
-    scene.add(cyanLight);
-
-    // Dynamic Mesh Creation (Abstract Shapes)
-    const shapesArray = [];
-    const geometries = [
-      new THREE.IcosahedronGeometry(1.2, 0), // Sharp faceted polyhedra
-      new THREE.TorusGeometry(0.8, 0.25, 12, 24), // High-tech ring
-      new THREE.OctahedronGeometry(0.9, 1), // Spherical crystal grid
-      new THREE.IcosahedronGeometry(0.7, 1)
+    const meshInventory = [];
+    const geometryTypes = [
+      new THREE.TorusKnotGeometry(0.7, 0.22, 120, 16),
+      new THREE.DodecahedronGeometry(0.9, 0),
+      new THREE.IcosahedronGeometry(0.8, 1)
     ];
+    const palette = [0x06b6d4, 0xa855f7, 0x10b981];
 
-    const colors = [0x06b6d4, 0x8b5cf6, 0x3b82f6, 0xec4899];
+    for (let i = 0; i < 10; i++) {
+      const mesh = new THREE.Mesh(geometryTypes[i % geometryTypes.length], new THREE.MeshStandardMaterial({
+        color: palette[i % palette.length], metalness: 0.85, roughness: 0.15, wireframe: i % 2 === 0, transparent: true, opacity: 0.4
+      }));
+      mesh.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 4 - 1);
+      mesh.spinX = (Math.random() - 0.5) * 0.006; mesh.spinY = (Math.random() - 0.5) * 0.006;
+      scene.add(mesh); meshInventory.push(mesh);
+    }
+    camera.position.z = 6;
 
-    geometries.forEach((geo, index) => {
-      // Mesh Standard Material gives it that glossy 3D volumetric look
-      const material = new THREE.MeshStandardMaterial({
-        color: colors[index % colors.length],
-        wireframe: index % 2 === 0, // Alternate wireframes & solids
-        roughness: 0.2,
-        metalness: 0.8,
-        transparent: true,
-        opacity: 0.65
-      });
-
-      const mesh = new THREE.Mesh(geo, material);
-      
-      // Distribute shapes randomly around the field matrix
-      mesh.position.x = (Math.random() - 0.5) * 10;
-      mesh.position.y = (Math.random() - 0.5) * 6;
-      mesh.position.z = (Math.random() - 0.5) * 4 - 2;
-      
-      // Random rotation vectors for unique spinning movements
-      mesh.rotSpeedX = (Math.random() - 0.5) * 0.01;
-      mesh.rotSpeedY = (Math.random() - 0.5) * 0.01;
-      
-      scene.add(mesh);
-      shapesArray.push(mesh);
+    let pointerX = 0, pointerY = 0, smoothX = 0, smoothY = 0;
+    window.addEventListener('mousemove', (e) => {
+      pointerX = (e.clientX / window.innerWidth) * 2 - 1; pointerY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
 
-    camera.position.z = 5;
-
-    // Cursor Tracking System
-    let targetMouseX = 0;
-    let targetMouseY = 0;
-    let currentMouseX = 0;
-    let currentMouseY = 0;
-
-    window.addEventListener('mousemove', (event) => {
-      // Normalize coordinate metrics (-1 to +1 mapping)
-      targetMouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      targetMouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-    });
-
-    // Core Animation System Frame Render Loop
-    function frameTick() {
-      requestAnimationFrame(frameTick);
-
-      // Smooth cursor interpolation (Linear Interpolation - Lerp)
-      currentMouseX += (targetMouseX - currentMouseX) * 0.08;
-      currentMouseY += (targetMouseY - currentMouseY) * 0.08;
-
-      // Animate shapes & inject cursor reactive drift metrics
-      shapesArray.forEach((shape, i) => {
-        shape.rotation.x += shape.rotSpeedX;
-        shape.rotation.y += shape.rotSpeedY;
-
-        // Magnetically drift objects based on normalized cursor position coordinates
-        shape.position.x += (currentMouseX * (i + 1) * 0.15 - shape.position.x) * 0.02;
-        shape.position.y += (currentMouseY * (i + 1) * 0.15 - shape.position.y) * 0.02;
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      smoothX += (pointerX - smoothX) * 0.06; smoothY += (pointerY - smoothY) * 0.06;
+      cursorLight.position.set(smoothX * 6, smoothY * 4, 2);
+      meshInventory.forEach((obj, idx) => {
+        obj.rotation.x += obj.spinX; obj.rotation.y += obj.spinY;
+        obj.position.x += (smoothX * (idx * 0.1) - (obj.position.x * 0.01)) * 0.01;
+        obj.position.y += (smoothY * (idx * 0.1) - (obj.position.y * 0.01)) * 0.01;
       });
-
-      // Subtle camera pan to give the entire field an atmospheric breathing pulse
-      camera.position.x += (currentMouseX * 0.5 - camera.position.x) * 0.05;
-      camera.position.y += (currentMouseY * 0.5 - camera.position.y) * 0.05;
+      camera.position.x += (smoothX * 0.3 - camera.position.x) * 0.05; camera.position.y += (smoothY * 0.3 - camera.position.y) * 0.05;
       camera.lookAt(scene.position);
-
       renderer.render(scene, camera);
     }
-
-    frameTick();
-
-    // Responsiveness Handler Matrix
+    renderLoop();
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight);
     });
   </script>
 </body>

@@ -1,0 +1,30 @@
+[
+  {
+    "category": "🌐 Social Media",
+    "links": [
+      { "name": "Twitter / X", "url": "https://x.com", "desc": "Global microblogging feed stream", "color": "hover:border-cyan-500/40" },
+      { "name": "Instagram", "url": "https://instagram.com", "desc": "Visual media and asset capture logs", "color": "hover:border-pink-500/40" }
+    ]
+  },
+  {
+    "category": "💼 Professional Network",
+    "links": [
+      { "name": "LinkedIn Profile", "url": "https://www.linkedin.com/in/puneet-singh-2b702b124/", "desc": "Verified corporate professional node", "color": "hover:border-blue-500/40" },
+      { "name": "GitHub Mainframe", "url": "https://github.com/PuneetSingh-World", "desc": "Central cloud source repository directory", "color": "hover:border-slate-400/40" }
+    ]
+  },
+  {
+    "category": "🧠 Learning Space",
+    "links": [
+      { "name": "Coursera", "url": "https://coursera.org", "desc": "Engine training modules & technical certs", "color": "hover:border-emerald-500/40" },
+      { "name": "Developer Documentation", "url": "https://developer.mozilla.org", "desc": "Core language blueprints & reference maps", "color": "hover:border-teal-400/40" }
+    ]
+  },
+  {
+    "category": "🎮 Entertainment Space",
+    "links": [
+      { "name": "YouTube Media", "url": "https://youtube.com", "desc": "Dynamic audio/video stream container", "color": "hover:border-red-500/40" },
+      { "name": "Netflix Terminal", "url": "https://netflix.com", "desc": "Cinematic entertainment database playback", "color": "hover:border-red-700/40" }
+    ]
+  }
+]
