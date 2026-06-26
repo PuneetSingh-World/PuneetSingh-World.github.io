@@ -203,6 +203,16 @@
       lastMouseX = mouseX;
       lastMouseY = mouseY;
     });
+    // --- Add this touch support script block directly beneath your mousemove block ---
+
+// Handle touch tracking for Mobile and Tablet screens
+window.addEventListener('touchmove', (e) => {
+  if (e.touches.length > 0) {
+    // Grab coordinates of the first finger touching the screen
+    pointerX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+    pointerY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+  }
+}, { passive: true }); // passive: true keeps scrolling smooth on mobile devices
 
     // Main Engine Frame Loop
     function renderFrame() {
