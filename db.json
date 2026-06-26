@@ -1,7 +1,8 @@
 [
   {
-    "category": "🌐 Social Media",
+    "category": "🌐 Social Media & Comms",
     "links": [
+      { "name": "Mail Box", "url": "https://mail.google.com", "desc": "Primary email terminal inbox stream", "color": "hover:border-red-500/40" },
       { "name": "Twitter / X", "url": "https://x.com", "desc": "Global microblogging feed stream", "color": "hover:border-cyan-500/40" },
       { "name": "Instagram", "url": "https://instagram.com", "desc": "Visual media and asset capture logs", "color": "hover:border-pink-500/40" }
     ]
@@ -23,6 +24,7 @@
   {
     "category": "🎮 Entertainment Space",
     "links": [
+      { "name": "Amazon Prime", "url": "https://www.primevideo.com", "desc": "Premium streaming catalog playback matrix", "color": "hover:border-blue-400/40" },
       { "name": "YouTube Media", "url": "https://youtube.com", "desc": "Dynamic audio/video stream container", "color": "hover:border-red-500/40" },
       { "name": "Netflix Terminal", "url": "https://netflix.com", "desc": "Cinematic entertainment database playback", "color": "hover:border-red-700/40" }
     ]
