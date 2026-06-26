@@ -4,108 +4,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Puneet's Quantum Command Center</title>
-
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><radialGradient id='g' cx='50%' cy='50%' r='50%'><stop offset='0%' stop-color='%2322d3ee'/><stop offset='100%' stop-color='%234f46e5'/></radialGradient><circle cx='50' cy='50' r='46' fill='url(%23g)' stroke='%23ffffff' stroke-width='4'/><text y='64' x='50' font-size='42' font-weight='900' font-family='system-ui,sans-serif' fill='%23ffffff' text-anchor='middle' letter-spacing='-2'>PS</text></svg>">
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
+    /* Dark Mode Defaults */
     body {
       background: radial-gradient(circle at center, #0b071e 0%, #020106 100%);
       overflow-x: hidden;
+      transition: background 0.5s ease, color 0.3s ease;
     }
-    /* Advanced Cyber Glassmorphism */
     .cyber-card {
       background: linear-gradient(135deg, rgba(16, 12, 42, 0.5) 0%, rgba(5, 3, 15, 0.7) 100%);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
       border: 1px solid rgba(99, 102, 241, 0.15);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
+      transition: background 0.5s ease, border-color 0.5s ease;
     }
-    /* Moving Tech Accent Line */
-    .cyber-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; hieght: 2px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #06b6d4, #a855f7, transparent);
-      transition: all 0.6s ease;
+
+    /* Light Mode Overrides */
+    body.light-theme {
+      background: radial-gradient(circle at center, #f4f6ff 0%, #dbe2ef 100%);
     }
-    .cyber-card:hover::before {
-      left: 100%;
+    body.light-theme .cyber-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(235, 240, 250, 0.8) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.08);
     }
-    canvas {
-      pointer-events: none;
-    }
-    ::-webkit-scrollbar {
-      display: none;
-    }
+
+    canvas { pointer-events: none; }
+    ::-webkit-scrollbar { display: none; }
   </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col items-center p-4 md:p-8 font-sans relative select-none">
+<body class="min-h-screen text-slate-100 dark-theme-text flex flex-col items-center p-4 md:p-8 font-sans relative select-none">
 
   <canvas id="quantum-viewport" class="fixed top-0 left-0 w-full h-full z-0"></canvas>
 
+  <button id="theme-toggle" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full glass-card border border-white/10 flex items-center justify-center cursor-pointer shadow-lg hover:scale-110 active:scale-95 transition-all text-lg bg-slate-900/40 text-white dark:text-amber-400">
+    🌙
+  </button>
+
   <div class="relative z-10 w-full max-w-5xl flex flex-col items-center">
     
-    <header class="text-center my-8 max-w-xl w-full cyber-card p-6 rounded-2xl border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.1)] animate-fade-in">
-      <div class="w-16 h-16 bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-600 rounded-full mx-auto mb-3 shadow-[0_0_40px_rgba(6,182,212,0.5)] flex items-center justify-center text-xl font-black tracking-widest border border-cyan-300/30 relative group">
+    <header id="main-header" class="text-center my-8 max-w-xl w-full cyber-card p-6 rounded-2xl border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.1)]">
+      <div class="w-16 h-16 bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-600 rounded-full mx-auto mb-3 shadow-[0_0_40px_rgba(6,182,212,0.5)] flex items-center justify-center text-xl font-black tracking-widest border border-white/20 relative">
         <span class="absolute inset-0 rounded-full bg-cyan-400/20 blur animate-ping"></span>
         <span class="relative z-10 text-white">PS</span>
       </div>
-      <h1 class="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-indigo-300 bg-clip-text text-transparent uppercase">
+      <h1 id="title-text" class="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-indigo-300 bg-clip-text text-transparent uppercase">
         Puneet's Mainframe
       </h1>
       <p class="text-cyan-400 text-[9px] font-bold tracking-[0.4em] mt-2 uppercase">Quantum Stream Terminal</p>
     </header>
 
-    <main id="matrix-grid" class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 px-2">
-      </main>
+    <main id="matrix-grid" class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 px-2"></main>
 
-    <footer class="my-12 text-[9px] tracking-widest text-slate-600 uppercase">
+    <footer class="my-12 text-center text-[9px] tracking-widest text-slate-500 uppercase">
       Grid Core Protocol &bull; Signal: <span class="text-cyan-400 font-bold animate-pulse">Synchronized</span>
     </footer>
   </div>
 
   <script>
     /* ==========================================
-       1. DATABASE MATRIX CONFIGURATION
+       1. FALLBACK CONFIGURATION MATRIX
        ========================================== */
+    const fallbackData = [
+      {
+        category: "🌐 Social Media & Comms",
+        links: [
+          { name: "Mail Box", url: "https://mail.google.com", desc: "Primary email terminal inbox stream" },
+          { name: "Twitter / X", url: "https://x.com", desc: "Global microblogging feed stream" },
+          { name: "Instagram", url: "https://instagram.com", desc: "Visual media and asset capture logs" }
+        ]
+      },
+      {
+        category: "💼 Professional Network",
+        links: [
+          { name: "LinkedIn Profile", url: "https://www.linkedin.com/in/puneet-singh-2b702b124/", desc: "Verified corporate professional node" },
+          { name: "GitHub Mainframe", url: "https://github.com/PuneetSingh-World", desc: "Central cloud source repository directory" }
+        ]
+      },
+      {
+        category: "🧠 Learning Space",
+        links: [
+          { name: "Coursera", url: "https://coursera.org", desc: "Engine training modules & technical certs" },
+          { name: "Developer Documentation", url: "https://developer.mozilla.org", desc: "Core language blueprints & reference maps" }
+        ]
+      },
+      {
+        category: "🎮 Entertainment Space",
+        links: [
+          { name: "Amazon Prime", url: "https://www.primevideo.com", desc: "Premium streaming catalog playback matrix" },
+          { name: "YouTube Media", url: "https://youtube.com", desc: "Dynamic audio/video stream container" },
+          { name: "Netflix Terminal", url: "https://netflix.com", desc: "Cinematic entertainment database playback" }
+        ]
+      }
+    ];
+
+    let isLightMode = false;
+
     async function initPipeline() {
+      const grid = document.getElementById('matrix-grid');
+      let finalData;
+
       try {
         const response = await fetch('./db.json');
-        const finalData = await response.json();
-
-        const grid = document.getElementById('matrix-grid');
-        grid.innerHTML = finalData.map(box => `
-          <div class="cyber-card p-6 rounded-2xl shadow-2xl">
-            <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
-              <h2 class="text-xs font-black tracking-[0.2em] text-cyan-400 uppercase">${box.category}</h2>
-              <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
-            </div>
-            <div class="space-y-3">
-              ${box.links.map(link => `
-                <a href="${link.url}" target="_blank" rel="noopener noreferrer" 
-                   class="group block p-4 bg-slate-950/30 border border-white/5 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-950/20 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]">
-                  <div class="flex justify-between items-center">
-                    <div>
-                      <h3 class="font-bold text-slate-300 group-hover:text-white transition-colors duration-200">${link.name}</h3>
-                      <p class="text-[11px] text-slate-400 mt-0.5 line-clamp-1 group-hover:text-slate-300">${link.desc}</p>
-                    </div>
-                    <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-slate-500 group-hover:border-cyan-500/30 group-hover:text-cyan-400 transition-all duration-300">
-                      &nearr;
-                    </div>
-                  </div>
-                </a>
-              `).join('')}
-            </div>
-          </div>
-        `).join('');
+        if (!response.ok) throw new Error();
+        finalData = await response.json();
       } catch (err) {
-        console.error("Pipeline failure:", err);
+        finalData = fallbackData;
       }
+
+      renderUI(finalData);
     }
+
+    function renderUI(data) {
+      const grid = document.getElementById('matrix-grid');
+      const textClass = isLightMode ? 'text-slate-800' : 'text-slate-300';
+      const headingClass = isLightMode ? 'text-indigo-600' : 'text-cyan-400';
+      const cardBg = isLightMode ? 'bg-white/40' : 'bg-slate-950/30';
+
+      grid.innerHTML = data.map(box => `
+        <div class="cyber-card p-6 rounded-2xl shadow-2xl">
+          <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
+            <h2 class="text-xs font-black tracking-[0.2em] ${headingClass} uppercase">${box.category}</h2>
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+          </div>
+          <div class="space-y-3">
+            ${box.links.map(link => `
+              <a href="${link.url}" target="_blank" rel="noopener noreferrer" 
+                 class="group block p-4 ${cardBg} border border-white/5 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h3 class="font-bold ${textClass} group-hover:text-cyan-500 transition-colors duration-200">${link.name}</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5 line-clamp-1">${link.desc}</p>
+                  </div>
+                  <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-slate-500 group-hover:text-cyan-400 transition-all duration-300">
+                    &nearr;
+                  </div>
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
     document.addEventListener('DOMContentLoaded', initPipeline);
 
     /* ==========================================
@@ -119,42 +162,26 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Dynamic Reactive Spotlights
-    const mouseLight = new THREE.PointLight(0x06b6d4, 4, 30);
-    scene.add(mouseLight);
+    const mouseLight = new THREE.PointLight(0x06b6d4, 4, 30); scene.add(mouseLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); scene.add(ambientLight);
+    const keyLight = new THREE.DirectionalLight(0xa855f7, 2); keyLight.position.set(5, 5, 4); scene.add(keyLight);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
-    scene.add(ambientLight);
-
-    const keyLight = new THREE.DirectionalLight(0xa855f7, 2);
-    keyLight.position.set(5, 5, 4);
-    scene.add(keyLight);
-
-    // Particle Matrix Engine (The Star Field)
     const particleCount = 180;
     const particleGeometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
-    const initialZ = new Float32Array(particleCount); // Track original positions
+    const initialZ = new Float32Array(particleCount);
 
     for(let i=0; i<particleCount*3; i+=3) {
-      positions[i] = (Math.random() - 0.5) * 15;     // X Axis
-      positions[i+1] = (Math.random() - 0.5) * 10;   // Y Axis
-      positions[i+2] = (Math.random() - 0.5) * 5 - 2; // Z Axis
+      positions[i] = (Math.random() - 0.5) * 15;
+      positions[i+1] = (Math.random() - 0.5) * 10;
+      positions[i+2] = (Math.random() - 0.5) * 5 - 2;
       initialZ[i/3] = positions[i+2];
     }
     
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleMaterial = new THREE.PointsMaterial({
-      color: 0x06b6d4,
-      size: 0.04,
-      transparent: true,
-      opacity: 0.6,
-      blending: THREE.AdditiveBlending
-    });
-    const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
-    scene.add(particleSystem);
+    const particleMaterial = new THREE.PointsMaterial({ color: 0x06b6d4, size: 0.04, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+    const particleSystem = new THREE.Points(particleGeometry, particleMaterial); scene.add(particleSystem);
 
-    // Core Solid 3D Geometry Builds
     const cluster = [];
     const geometryInventory = [
       new THREE.TorusKnotGeometry(0.6, 0.2, 150, 16),
@@ -164,108 +191,104 @@
     const colorMatrix = [0x06b6d4, 0xa855f7, 0x6366f1];
 
     for (let i = 0; i < 8; i++) {
-      const mat = new THREE.MeshStandardMaterial({
-        color: colorMatrix[i % colorMatrix.length],
-        metalness: 0.9,
-        roughness: 0.1,
-        wireframe: i % 2 === 0,
-        transparent: true,
-        opacity: 0.4
-      });
-
-      const mesh = new THREE.Mesh(geometryInventory[i % geometryInventory.length], mat);
+      const mesh = new THREE.Mesh(geometryInventory[i % geometryInventory.length], new THREE.MeshStandardMaterial({
+        color: colorMatrix[i % colorMatrix.length], metalness: 0.9, roughness: 0.1, wireframe: i % 2 === 0, transparent: true, opacity: 0.4
+      }));
       mesh.position.set((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 3 - 1);
       mesh.velocity = new THREE.Vector3((Math.random() - 0.5) * 0.003, (Math.random() - 0.5) * 0.003, 0);
-      mesh.spinX = (Math.random() - 0.5) * 0.005;
-      mesh.spinY = (Math.random() - 0.5) * 0.005;
-      
-      scene.add(mesh);
-      cluster.push(mesh);
+      mesh.spinX = (Math.random() - 0.5) * 0.005; mesh.spinY = (Math.random() - 0.5) * 0.005;
+      scene.add(mesh); cluster.push(mesh);
     }
 
     camera.position.z = 5.5;
+    let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0, lastMouseX = 0, lastMouseY = 0, mouseSpeed = 0;
 
-    // Fluid Mouse Physics Mapping
-    let mouseX = 0, mouseY = 0;
-    let targetX = 0, targetY = 0;
-    let lastMouseX = 0, lastMouseY = 0;
-    let mouseSpeed = 0;
-
+    // Desktop Tracker
     window.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-      
-      // Calculate instantaneous movement velocity
-      let dx = mouseX - lastMouseX;
-      let dy = mouseY - lastMouseY;
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1; mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      let dx = mouseX - lastMouseX; let dy = mouseY - lastMouseY;
       mouseSpeed = Math.sqrt(dx*dx + dy*dy) * 15;
-      
-      lastMouseX = mouseX;
-      lastMouseY = mouseY;
+      lastMouseX = mouseX; lastMouseY = mouseY;
     });
-    // --- Add this touch support script block directly beneath your mousemove block ---
 
-// Handle touch tracking for Mobile and Tablet screens
-window.addEventListener('touchmove', (e) => {
-  if (e.touches.length > 0) {
-    // Grab coordinates of the first finger touching the screen
-    pointerX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-    pointerY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-  }
-}, { passive: true }); // passive: true keeps scrolling smooth on mobile devices
+    // Mobile/Tab Touch Tracker
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        mouseX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+      }
+    }, { passive: true });
 
-    // Main Engine Frame Loop
     function renderFrame() {
       requestAnimationFrame(renderFrame);
-
-      // Smooth coordinate interpolation
-      targetX += (mouseX - targetX) * 0.07;
-      targetY += (mouseY - targetY) * 0.07;
-      mouseSpeed += (0 - mouseSpeed) * 0.05; // Decay velocity back to rest
-
-      // Map glow light directly onto smooth coordinates
+      targetX += (mouseX - targetX) * 0.07; targetY += (mouseY - targetY) * 0.07;
+      mouseSpeed += (0 - mouseSpeed) * 0.05;
       mouseLight.position.set(targetX * 6, targetY * 4, 1.5);
 
-      // Warp particle system based on speed metrics
       const positions = particleSystem.geometry.attributes.position.array;
       let index = 0;
       for(let i=0; i<particleCount; i++) {
-        // Distort Z axis depth based on speed vectors to create "warp tunnel" look
         positions[index + 2] = initialZ[i] + (mouseSpeed * 0.3);
-        // Slowly slide particles sideways based on mouse drift
         positions[index] += (targetX * 0.01 - positions[index] * 0.001) * 0.05;
         index += 3;
       }
       particleSystem.geometry.attributes.position.needsUpdate = true;
 
-      // Transform geometry clusters
       cluster.forEach((obj) => {
-        obj.rotation.x += obj.spinX;
-        obj.rotation.y += obj.spinY;
-        
-        // Float objects continuously through layout space
-        obj.position.x += obj.velocity.x;
-        obj.position.y += obj.velocity.y;
-
-        // Boundary reflection bounds
+        obj.rotation.x += obj.spinX; obj.rotation.y += obj.spinY;
+        obj.position.x += obj.velocity.x; obj.position.y += obj.velocity.y;
         if (Math.abs(obj.position.x) > 6) obj.velocity.x *= -1;
         if (Math.abs(obj.position.y) > 4) obj.velocity.y *= -1;
       });
 
-      // Camera drift matrix
-      camera.position.x += (targetX * 0.5 - camera.position.x) * 0.05;
-      camera.position.y += (targetY * 0.5 - camera.position.y) * 0.05;
+      camera.position.x += (targetX * 0.5 - camera.position.x) * 0.05; camera.position.y += (targetY * 0.5 - camera.position.y) * 0.05;
       camera.lookAt(scene.position);
-
       renderer.render(scene, camera);
     }
     renderFrame();
 
-    // Resize Matrices Handler
+    /* ==========================================
+       3. LIVE THEME SWITCHER LOGIC
+       ========================================== */
+    const toggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+    const titleText = document.getElementById('title-text');
+
+    toggleBtn.addEventListener('click', () => {
+      isLightMode = !isLightMode;
+      
+      if (isLightMode) {
+        body.classList.add('light-theme');
+        body.classList.remove('text-slate-100');
+        body.classList.add('text-slate-800');
+        titleText.classList.remove('from-white', 'to-indigo-300');
+        titleText.classList.add('from-slate-900', 'to-indigo-950');
+        toggleBtn.innerText = "☀️";
+        
+        // Adapt 3D Engine Lighting parameters for a light canvas background
+        ambientLight.intensity = 0.75; 
+        particleMaterial.color.setHex(0x4f46e5); // Indigo particles
+        particleMaterial.opacity = 0.3;
+      } else {
+        body.classList.remove('light-theme');
+        body.classList.remove('text-slate-800');
+        body.classList.add('text-slate-100');
+        titleText.classList.remove('from-slate-900', 'to-indigo-950');
+        titleText.classList.add('from-white', 'to-indigo-300');
+        toggleBtn.innerText = "🌙";
+        
+        // Revert 3D Engine to dark cyber state
+        ambientLight.intensity = 0.1;
+        particleMaterial.color.setHex(0x06b6d4); // Cyan particles
+        particleMaterial.opacity = 0.6;
+      }
+      
+      // Re-trigger pipeline to update card element class strings instantly
+      initPipeline();
+    });
+
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight);
     });
   </script>
 </body>
